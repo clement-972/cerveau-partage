@@ -1,0 +1,8 @@
+# Fichiers systeme / OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Le fichier d'identite de l'auteur vit hors du depot (repertoire personnel).
+# The author identity file lives outside the repo (home directory).
+# Rien a ignorer ici a ce sujet, note de rappel uniquement.
