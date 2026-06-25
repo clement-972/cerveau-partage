@@ -23,6 +23,26 @@ Le cerveau est un dossier nomme `cerveau/` a la racine de l'espace de travail pa
 
 La source de verite des conventions est `cerveau/00_CONTEXTE.md`. Ce Skill ne duplique pas ces conventions, il s'y refere.
 
+## Synchronisation Git (optionnelle, automatique si presente)
+
+Si le cerveau vit dans un depot Git, ce Skill maintient la synchro tout seul : l'equipe n'a jamais a taper de commande Git. Si le cerveau n'est pas dans un depot Git, ignorer entierement cette section (le Skill fonctionne en local comme avant).
+
+**Detection** : depuis le dossier du cerveau, recuperer la racine du depot avec `git -C "<cerveau>" rev-parse --show-toplevel`. Si la commande echoue, il n'y a pas de depot : ne rien faire de ce qui suit.
+
+**Au demarrage, avant la lecture, se mettre a jour** :
+- `git -C "<racine>" pull --rebase --autostash`
+- Si la commande echoue (hors ligne, pas d'acces reseau), ne pas bloquer : continuer avec la version locale et le signaler en une phrase.
+- En cas de conflit, le resoudre s'il est trivial (fichiers differents ou ajouts distincts) ; sinon, prevenir l'utilisateur et continuer en lecture seule.
+
+**Sur "MAJ cerveau", apres avoir range, journalise et rafraichi le cockpit, publier** :
+- `git -C "<racine>" add -A`
+- `git -C "<racine>" commit -m "MAJ cerveau: <resume en une phrase>"`
+- `git -C "<racine>" push`
+- Si le push est rejete parce que le distant a avance, faire `git -C "<racine>" pull --rebase --autostash` puis re-pousser.
+- Si le push echoue pour cause d'authentification ou de reseau, le signaler clairement : le travail est commite en local et sera pousse a la prochaine occasion. Ne pas bloquer.
+
+Cette synchro ne concerne que le contenu du cerveau. Le fichier d'identite de l'auteur (voir plus bas) vit hors du depot et ne doit jamais etre committe.
+
 ## Declencheurs
 
 - **Au demarrage d'une session** sur un projet contenant `cerveau/` : appliquer le protocole de lecture.
@@ -30,6 +50,7 @@ La source de verite des conventions est `cerveau/00_CONTEXTE.md`. Ce Skill ne du
 
 ## Protocole de lecture (au demarrage)
 
+0. **Se synchroniser d'abord** (si le cerveau est dans un depot Git) : appliquer le `pull` decrit dans "Synchronisation Git" pour partir de la derniere version de l'equipe avant de lire.
 1. Lire `cerveau/00_CONTEXTE.md` en entier. Il est court et contient la table d'aiguillage.
 2. Identifier le sujet de la session (ce que l'utilisateur demande).
 3. A l'aide de la table d'aiguillage, charger **uniquement** le ou les sous-dossiers pertinents. Ne pas charger tout le cerveau.
@@ -46,7 +67,8 @@ Detail complet et exemples : voir `references/protocole-ecriture.md`. En resume 
 4. **Ranger** : integrer proprement dans la fiche choisie, ou creer une nouvelle fiche au format de `references/modeles-fiches.md` (nom en minuscules sans accents, en-tete avec statut, date, auteur, mots-cles).
 5. **Journaliser** : ajouter une ligne en haut du tableau de `cerveau/00_JOURNAL.md` (date du jour, auteur, chemin du fichier, resume en une phrase).
 6. **Rafraichir le cockpit** (si present) : si le cerveau contient `_cockpit/generate.py`, regenerer la visualisation avec `python3 <cerveau>/_cockpit/generate.py`. Commodite en lecture seule ; si `python3` est absent, ignorer sans bloquer.
-7. **Confirmer** en une seule phrase, en indiquant le fichier touche et l'action (cree ou mis a jour).
+7. **Synchroniser** (si le cerveau est dans un depot Git) : appliquer le `add` + `commit` + `push` decrit dans "Synchronisation Git" pour rendre la mise a jour visible a l'equipe.
+8. **Confirmer** en une seule phrase, en indiquant le fichier touche, l'action (cree ou mis a jour) et, si Git est present, que la mise a jour a ete poussee (ou conservee en local si le push n'a pas pu aboutir).
 
 ## Identite de l'auteur
 
@@ -84,6 +106,18 @@ A light team-memory layer on top of a folder of Markdown files. All knowledge li
 
 The brain is a folder named `cerveau/` at the root of the shared workspace (the folder opened in the session). If it does not exist, this Skill does nothing. The source of truth for conventions is `cerveau/00_CONTEXTE.md`; this Skill refers to it instead of duplicating it.
 
+## Git synchronization (optional, automatic when present)
+
+If the brain lives in a Git repository, this Skill keeps it in sync by itself: the team never types a Git command. If the brain is not in a Git repository, ignore this whole section (the Skill works locally as before).
+
+**Detection**: from the brain folder, get the repo root with `git -C "<brain>" rev-parse --show-toplevel`. If it fails, there is no repo: do none of the following.
+
+**At startup, before reading, update**: `git -C "<root>" pull --rebase --autostash`. If it fails (offline, no access), do not block: continue with the local version and say so in one sentence. On a conflict, resolve it if trivial (different files or distinct additions); otherwise warn the user and continue read-only.
+
+**On "MAJ cerveau", after filing, logging and refreshing the cockpit, publish**: `git -C "<root>" add -A`, then `git -C "<root>" commit -m "MAJ cerveau: <one-sentence summary>"`, then `git -C "<root>" push`. If the push is rejected because the remote moved ahead, run `git -C "<root>" pull --rebase --autostash` then push again. If the push fails for auth or network reasons, say so clearly: the work is committed locally and will be pushed next time. Do not block.
+
+This sync only covers the brain content. The author identity file (see below) lives outside the repo and must never be committed.
+
 ## Triggers
 
 - **At session start** on a project containing `cerveau/`: apply the reading protocol.
@@ -91,6 +125,7 @@ The brain is a folder named `cerveau/` at the root of the shared workspace (the 
 
 ## Reading protocol (at startup)
 
+0. **Sync first** (if the brain is in a Git repo): run the `pull` from "Git synchronization" to start from the team's latest version before reading.
 1. Read all of `cerveau/00_CONTEXTE.md` (short, contains the routing table).
 2. Identify the session topic.
 3. Using the routing table, load **only** the relevant subfolder(s). Do not load the whole brain.
@@ -99,7 +134,7 @@ The brain is a folder named `cerveau/` at the root of the shared workspace (the 
 
 ## Writing protocol (on "MAJ cerveau")
 
-Full detail and examples: see `references/protocole-ecriture.md`. In short: collect the information, categorize it via the routing table, check for an existing near-duplicate (and offer to update it rather than create a new one), file it cleanly using the templates in `references/modeles-fiches.md`, prepend a line to `cerveau/00_JOURNAL.md`, refresh the cockpit if present (run `python3 <cerveau>/_cockpit/generate.py`, a read-only convenience, skipped without blocking if python3 is unavailable), then confirm in a single sentence.
+Full detail and examples: see `references/protocole-ecriture.md`. In short: collect the information, categorize it via the routing table, check for an existing near-duplicate (and offer to update it rather than create a new one), file it cleanly using the templates in `references/modeles-fiches.md`, prepend a line to `cerveau/00_JOURNAL.md`, refresh the cockpit if present (run `python3 <cerveau>/_cockpit/generate.py`, a read-only convenience, skipped without blocking if python3 is unavailable), then (if the brain is in a Git repo) commit and push the update so the team sees it (see "Git synchronization"), then confirm in a single sentence.
 
 ## Author identity
 

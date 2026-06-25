@@ -3,6 +3,10 @@
 Thumbs.db
 desktop.ini
 
+# Cockpit genere (regenerable localement via _cockpit/generate.py)
+# Generated cockpit (regenerable locally via _cockpit/generate.py)
+cockpit.html
+
 # Le fichier d'identite de l'auteur vit hors du depot (repertoire personnel).
 # The author identity file lives outside the repo (home directory).
 # Rien a ignorer ici a ce sujet, note de rappel uniquement.
