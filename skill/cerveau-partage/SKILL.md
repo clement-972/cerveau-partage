@@ -21,7 +21,7 @@ The project name ("Cerveau Partage"), the write keyword ("MAJ cerveau") and the 
 
 ## Where the brain is
 
-The brain is a Doc named "Cerveau". It has a "Sommaire et conventions" page holding the routing table, one sub-page per domain (01 Reglementaire ... 06 En cours), and a "Journal" page. Everything is handled through the documentation tool's connector (reading and writing pages).
+The brain is a Doc named "Cerveau". It has a "Sommaire et conventions" page holding the routing table, one sub-page per domain (01 Reglementaire ... 06 En cours), and a "Journal" page. Each note (fiche) is its own sub-page under its category, so the list of page titles works as a lightweight, always-current index that grows on its own. Everything is handled through the documentation tool's connector (reading and writing pages).
 
 To locate it, in order:
 
@@ -39,22 +39,23 @@ If no documentation connector is available, this Skill does nothing.
 
 ## Reading protocol
 
-1. Locate the brain and read its "Sommaire et conventions" page: it is short and holds the routing table.
-2. Identify the request's topic.
-3. Using the routing table, open **only** the relevant sub-page(s). Do not load the whole brain.
-4. If the topic is vague, list note titles from candidate sub-pages before reading in detail.
-5. Treat this knowledge as given: do not re-ask the user what the brain already records.
+Read by retrieval, never by loading everything. Cost stays bounded whatever the brain's size.
+
+1. Locate the brain and read its "Sommaire et conventions" page (short, holds the routing table). Use it to pick the relevant category.
+2. List the brain's page titles (names only, no content): this is a lightweight, always-current index of the available notes.
+3. Fetch the content of **only** the one or two notes that match the topic. Never load a whole category at once. For a keyword or cross-cutting question, use the connector's search to find the right notes, then fetch only those.
+4. Treat this knowledge as given: do not re-ask the user what the brain already records.
 
 ## Writing protocol (on "MAJ cerveau")
 
 Full detail and example: see `references/protocole-ecriture.md`. In short:
 
 1. **Collect** the information to store (ask if "MAJ cerveau" comes alone).
-2. **Categorize** via the routing table on the "Sommaire et conventions" page (the right sub-page by the nature of the info).
-3. **De-duplicate**: read the target sub-page and check whether the info already exists (titles and keywords). If a close note exists, offer to update it rather than create a new one, and wait for agreement.
-4. **File**: fold it cleanly into the chosen note, or add a new note using `references/modeles-fiches.md`.
-5. **Log**: prepend one line to the table on the "Journal" page (today's date, author, sub-page, one-sentence summary).
-6. **Confirm** in a single sentence, naming the sub-page touched and the action (created or updated).
+2. **Categorize** via the routing table on the "Sommaire et conventions" page (the right category by the nature of the info).
+3. **De-duplicate**: list the note titles under the target category (names only, cheap); if a close note exists, fetch it and offer to update it rather than create a new one, and wait for agreement.
+4. **File**: each note is its own sub-page under its category. Update the matching note's page (read it first, see the write-safety rule), or create a new sub-page under the category using `references/modeles-fiches.md` (the note's title becomes the page name).
+5. **Log**: prepend one line to the table on the "Journal" page (today's date, author, category, one-sentence summary).
+6. **Confirm** in a single sentence, naming the note touched and the action (created or updated).
 
 ### Write-safety rule (important)
 
@@ -80,7 +81,7 @@ Couche legere de memoire d'equipe posee sur un Doc structure, dans l'outil de do
 
 ## Ou se trouve le cerveau
 
-Le cerveau est un Doc intitule "Cerveau". Il contient une page "Sommaire et conventions" qui porte la table d'aiguillage, une sous-page par domaine (01 Reglementaire ... 06 En cours), et une page "Journal". Tout se manipule via le connecteur de l'outil de documentation.
+Le cerveau est un Doc intitule "Cerveau". Il contient une page "Sommaire et conventions" qui porte la table d'aiguillage, une sous-page par domaine (01 Reglementaire ... 06 En cours), et une page "Journal". Chaque fiche est une sous-page de sa categorie : la liste des titres de pages forme ainsi un index leger et toujours a jour qui grandit tout seul. Tout se manipule via le connecteur de l'outil de documentation.
 
 Pour le localiser, dans l'ordre :
 
@@ -97,22 +98,23 @@ Si aucun connecteur de documentation n'est disponible, ce Skill ne fait rien.
 
 ## Protocole de lecture
 
-1. Localiser le cerveau et lire sa page "Sommaire et conventions" : courte, elle contient la table d'aiguillage.
-2. Identifier le sujet de la demande.
-3. A l'aide de la table d'aiguillage, ouvrir **uniquement** la ou les sous-pages pertinentes. Ne pas charger tout le cerveau.
-4. Si le sujet est vague, lister d'abord les titres des fiches des sous-pages candidates.
-5. Utiliser ce savoir comme acquis : ne pas redemander ce qui est deja ecrit dans le cerveau.
+Lire par recuperation ciblee, jamais en chargeant tout. Le cout reste borne quelle que soit la taille du cerveau.
+
+1. Localiser le cerveau et lire sa page "Sommaire et conventions" (courte, elle contient la table d'aiguillage). S'en servir pour choisir la bonne categorie.
+2. Lister les titres des pages du cerveau (les noms seulement, sans le contenu) : c'est un index leger et toujours a jour des fiches disponibles.
+3. Charger le contenu d'**uniquement** la ou les 1 ou 2 fiches qui correspondent au sujet. Ne jamais charger une categorie entiere d'un coup. Pour une question par mot-cle ou transverse, utiliser la recherche du connecteur pour trouver les bonnes fiches, puis ne charger que celles-la.
+4. Utiliser ce savoir comme acquis : ne pas redemander ce qui est deja ecrit dans le cerveau.
 
 ## Protocole d'ecriture (sur "MAJ cerveau")
 
 Detail complet et exemple : voir `references/protocole-ecriture.md`. En resume :
 
 1. **Recueillir** l'information (la demander si "MAJ cerveau" arrive seul).
-2. **Categoriser** via la table d'aiguillage (la bonne sous-page selon la nature de l'info).
-3. **Anti-doublon** : lire la sous-page cible et chercher si l'info existe deja. Si une fiche proche existe, proposer de la mettre a jour plutot que d'en creer une nouvelle, et attendre l'accord.
-4. **Ranger** : integrer dans la fiche choisie, ou ajouter une nouvelle fiche au format de `references/modeles-fiches.md`.
-5. **Journaliser** : ajouter une ligne en haut du tableau de la page "Journal" (date du jour, auteur, sous-page, resume en une phrase).
-6. **Confirmer** en une seule phrase, en indiquant la sous-page touchee et l'action (cree ou mis a jour).
+2. **Categoriser** via la table d'aiguillage (la bonne categorie selon la nature de l'info).
+3. **Anti-doublon** : lister les titres des fiches de la categorie cible (les noms, peu couteux) ; si une fiche proche existe, la charger et proposer de la mettre a jour plutot que d'en creer une nouvelle, et attendre l'accord.
+4. **Ranger** : chaque fiche est une sous-page de sa categorie. Mettre a jour la page de la fiche concernee (la lire d'abord, voir la regle de securite), ou creer une nouvelle sous-page sous la categorie au format de `references/modeles-fiches.md` (le titre de la fiche devient le nom de la page).
+5. **Journaliser** : ajouter une ligne en haut du tableau de la page "Journal" (date du jour, auteur, categorie, resume en une phrase).
+6. **Confirmer** en une seule phrase, en indiquant la fiche touchee et l'action (cree ou mis a jour).
 
 ### Regle de securite d'ecriture (importante)
 

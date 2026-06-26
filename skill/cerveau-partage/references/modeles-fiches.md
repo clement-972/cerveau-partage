@@ -1,28 +1,24 @@
 # Note templates / Modeles de fiches
 
-Templates to use when creating a note inside a brain sub-page. A note is a section within its category sub-page: its title is a heading, followed by a status line. The header is common to all categories; the body adapts.
-
-The field labels below are kept in French (the team's working convention) and can be translated for another team. There is no filename rule: a note lives in a page, its title is enough to find it.
+Each note (fiche) is its own **sub-page** under its category. The note's **title is the page name**; the page **content** starts with a status line, then the category-specific sections below. The body field labels are kept in French (the team's convention) and can be translated.
 
 *(Version francaise plus bas.)*
 
-## Common header / En-tete commun
+## Status line (first line of every note)
 
 ```
-# Titre clair de la fiche
-
 > Statut : stable | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : mot1, mot2, mot3
 ```
 
-- `Statut`: `stable` in the settled sub-pages, `en cours` in `06 En cours`.
+- `Statut`: `stable` in the settled categories, `en cours` in `06 En cours`.
 - `Derniere maj`: date of the last write.
 - `Mots-cles`: 3 to 6 terms used for retrieval and de-duplication.
+
+Below are the body templates per category (page content goes after the status line; the page name carries the title).
 
 ## 01 Reglementaire
 
 ```
-# Titre
-
 > Statut : stable | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : ...
 
 ## Regle
@@ -38,8 +34,6 @@ Ce que cela impose concretement au produit.
 ## 02 Specs fonctionnelles
 
 ```
-# Titre
-
 > Statut : stable | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : ...
 
 ## Besoin
@@ -55,8 +49,6 @@ Les contraintes et cas limites.
 ## 03 Specs techniques
 
 ```
-# Titre
-
 > Statut : stable | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : ...
 
 ## Decision
@@ -72,8 +64,6 @@ Ce que cela implique pour la suite.
 ## 04 Skills
 
 ```
-# Titre
-
 > Statut : stable | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : ...
 
 ## Quand l'utiliser
@@ -89,8 +79,6 @@ Une illustration concrete.
 ## 05 Roadmap
 
 ```
-# Titre
-
 > Statut : stable | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : ...
 
 ## Cap
@@ -103,8 +91,6 @@ Ce qui est fait maintenant, ce qui suit, ce qui viendra plus tard.
 ## 06 En cours
 
 ```
-# Titre
-
 > Statut : en cours | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : ...
 
 ## Question ouverte
@@ -114,16 +100,16 @@ Ce qui reste a trancher.
 Les pistes et leurs compromis.
 
 ## A trancher
-Ce qui declenchera la decision, et vers quelle sous-page deplacer la fiche une fois stabilisee.
+Ce qui declenchera la decision, et vers quelle categorie deplacer la fiche une fois stabilisee.
 ```
 
 ---
 
 # Modeles de fiches (Francais)
 
-Gabarits a utiliser quand on cree une fiche dans une sous-page du cerveau. Une fiche est une section au sein de la sous-page de sa categorie : son titre est un en-tete, suivi d'une ligne d'etat. L'en-tete (ci-dessus) est commun a toutes les categories ; le corps s'adapte par categorie, selon les gabarits ci-dessus.
+Chaque fiche est une **sous-page** de sa categorie. Le **titre de la fiche est le nom de la page** ; le **contenu** de la page commence par une ligne d'etat, suivie des sections propres a la categorie (gabarits ci-dessus).
 
-- `Statut` : `stable` dans les sous-pages definitives, `en cours` dans `06 En cours`.
+- `Statut` : `stable` dans les categories definitives, `en cours` dans `06 En cours`.
 - `Derniere maj` : date du jour de la derniere ecriture.
 - `Mots-cles` : 3 a 6 termes qui servent au reperage et a l'anti-doublon.
-- Pas de regle de nom de fichier : la fiche vit dans une page, son titre suffit a la reperer.
+- Le nom de la page porte le titre ; pas de ligne `# Titre` dans le contenu, et pas de regle de nom de fichier.
