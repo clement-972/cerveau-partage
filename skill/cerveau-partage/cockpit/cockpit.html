@@ -1,0 +1,222 @@
+<!--
+  Cockpit du Cerveau — template d'artefact Cowork / Cowork artifact template.
+
+  Ce fichier est un MODELE. Il n'est pas autonome : il est destine a etre
+  instancie comme artefact Cowork (create_artifact), car il lit le cerveau en
+  direct via le connecteur de l'outil de documentation.
+
+  Avant instanciation, remplacer les deux marqueurs :
+    __CERVEAU_DOC_ID__     : l'ID du Doc "Cerveau" (ex. un Doc ClickUp). Le skill
+                             le localise (reference configuree, recherche par nom
+                             "Cerveau", ou question posee une fois).
+    __CLICKUP_TOOL_PREFIX__ : le prefixe des outils du connecteur de doc de
+                             l'utilisateur, de la forme "mcp__<id-connecteur>__".
+                             Il differe d'un utilisateur a l'autre.
+
+  Les deux appels utilises sont, pour ClickUp :
+    <prefix>clickup_list_document_pages  { document_id, max_page_depth: -1 }
+    <prefix>clickup_get_document_pages   { document_id, page_ids, content_format: "text/md" }
+  Pour un autre outil (Notion, etc.), adapter ces deux appels au connecteur
+  correspondant en conservant la meme logique (lister les pages, lire leur
+  contenu markdown, rendre).
+
+  This is a TEMPLATE, instantiated as a Cowork artifact; replace the two markers
+  above before creating the artifact.
+-->
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cockpit du Cerveau</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #f7f7f5;
+    color: #1d1d1f;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 24px 20px 64px; }
+  header.top { margin-bottom: 16px; }
+  h1.title { font-size: 22px; margin: 0 0 2px; }
+  .sub { color: #6b6b70; font-size: 13px; margin: 0 0 16px; }
+  .search { width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid #d9d9d6;
+            border-radius: 10px; background: #fff; outline: none; }
+  .search:focus { border-color: #b0b0ac; }
+  nav.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 4px; }
+  .chip { font-size: 12px; padding: 4px 10px; border: 1px solid #e0e0dc; border-radius: 999px;
+          background: #fff; color: #444; cursor: pointer; text-decoration: none; }
+  .chip:hover { background: #efefec; }
+  section.card { background: #fff; border: 1px solid #ebebe7; border-radius: 12px;
+                 padding: 16px 18px; margin: 14px 0; }
+  .card h2 { font-size: 17px; margin: 0 0 8px; }
+  .card h3 { font-size: 15px; margin: 0 0 8px; }
+  .card .body :first-child { margin-top: 0; }
+  .card .body h1 { font-size: 16px; }
+  .card .body h2 { font-size: 15px; }
+  .card .body h3 { font-size: 14px; }
+  .body p { margin: 8px 0; }
+  .body ul, .body ol { margin: 8px 0; padding-left: 22px; }
+  .body code { background: #f0f0ee; padding: 1px 5px; border-radius: 5px; font-size: 13px; }
+  .body blockquote { margin: 8px 0; padding: 4px 12px; border-left: 3px solid #ddd; color: #555; }
+  .body em { color: #6b6b70; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 13.5px; }
+  th, td { border: 1px solid #e6e6e2; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #f4f4f1; font-weight: 600; }
+  .status { font-size: 12px; color: #8a8a8e; margin-top: 10px; }
+  .err { background: #fff3f2; border: 1px solid #f3c9c4; color: #8a2018; padding: 12px 14px;
+         border-radius: 10px; font-size: 14px; }
+  .loading { color: #6b6b70; font-size: 14px; padding: 20px 0; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1 class="title">🧠 Cockpit du Cerveau</h1>
+    <p class="sub">Vue lecture seule du cerveau d'équipe, lue en direct à chaque ouverture.</p>
+    <input id="search" class="search" type="search" placeholder="Rechercher dans le cerveau…" autocomplete="off">
+    <nav class="chips" id="chips"></nav>
+  </header>
+  <main id="content">
+    <div class="loading">Chargement du cerveau…</div>
+  </main>
+  <div class="status" id="status"></div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var DOC_ID = "__CERVEAU_DOC_ID__";
+  var SERVER = "__CLICKUP_TOOL_PREFIX__";
+
+  var contentEl = document.getElementById("content");
+  var chipsEl = document.getElementById("chips");
+  var statusEl = document.getElementById("status");
+  var searchEl = document.getElementById("search");
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function inlineMd(t) {
+    return esc(t)
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+      .replace(/(^|[\s(])_([^_]+)_(?=$|[\s).,;:])/g, "$1<em>$2</em>")
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  }
+  function isTableSep(line) {
+    return /^\s*\|?[\s:\-]*-[\s:\-|]*\|?\s*$/.test(line) && line.indexOf("-") !== -1;
+  }
+  function splitRow(line) {
+    var s = line.trim();
+    if (s.charAt(0) === "|") s = s.slice(1);
+    if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+    return s.split("|").map(function (c) { return c.trim(); });
+  }
+  function renderMarkdown(md) {
+    if (!md) return "";
+    var lines = String(md).replace(/\r/g, "").split("\n");
+    var out = [], i = 0, para = [];
+    function flushPara() {
+      if (para.length) { out.push("<p>" + inlineMd(para.join(" ")) + "</p>"); para = []; }
+    }
+    while (i < lines.length) {
+      var line = lines[i], t = line.trim();
+      if (t === "") { flushPara(); i++; continue; }
+      if (/^\|.*\|?$/.test(t) && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+        flushPara();
+        var header = splitRow(lines[i]); i += 2; var rows = [];
+        while (i < lines.length && /^\s*\|.*\|?\s*$/.test(lines[i]) && lines[i].trim() !== "") { rows.push(splitRow(lines[i])); i++; }
+        var th = "<tr>" + header.map(function (c) { return "<th>" + inlineMd(c) + "</th>"; }).join("") + "</tr>";
+        var trs = rows.map(function (r) { return "<tr>" + r.map(function (c) { return "<td>" + inlineMd(c) + "</td>"; }).join("") + "</tr>"; }).join("");
+        out.push("<table><thead>" + th + "</thead><tbody>" + trs + "</tbody></table>");
+        continue;
+      }
+      var h = /^(#{1,6})\s+(.*)$/.exec(t);
+      if (h) { flushPara(); var lvl = h[1].length; out.push("<h" + lvl + ">" + inlineMd(h[2]) + "</h" + lvl + ">"); i++; continue; }
+      if (/^(-{3,}|\*{3,})$/.test(t)) { flushPara(); out.push("<hr>"); i++; continue; }
+      if (/^>\s?/.test(t)) {
+        flushPara(); var bq = [];
+        while (i < lines.length && /^>\s?/.test(lines[i].trim())) { bq.push(lines[i].trim().replace(/^>\s?/, "")); i++; }
+        out.push("<blockquote>" + inlineMd(bq.join(" ")) + "</blockquote>"); continue;
+      }
+      if (/^[-*]\s+/.test(t)) {
+        flushPara(); var ul = [];
+        while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) { ul.push(lines[i].trim().replace(/^[-*]\s+/, "")); i++; }
+        out.push("<ul>" + ul.map(function (x) { return "<li>" + inlineMd(x) + "</li>"; }).join("") + "</ul>"); continue;
+      }
+      if (/^\d+\.\s+/.test(t)) {
+        flushPara(); var ol = [];
+        while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) { ol.push(lines[i].trim().replace(/^\d+\.\s+/, "")); i++; }
+        out.push("<ol>" + ol.map(function (x) { return "<li>" + inlineMd(x) + "</li>"; }).join("") + "</ol>"); continue;
+      }
+      para.push(t); i++;
+    }
+    flushPara();
+    return out.join("\n");
+  }
+  function unwrap(r) {
+    if (!r) throw new Error("Réponse vide du connecteur");
+    if (r.isError) throw new Error("Erreur connecteur : " + JSON.stringify(r.content || r));
+    if (r.structuredContent) return r.structuredContent;
+    if (r.content && r.content[0] && r.content[0].text) {
+      try { return JSON.parse(r.content[0].text); } catch (e) { return { _text: r.content[0].text }; }
+    }
+    return r;
+  }
+  function flatten(pages, depth, acc) {
+    (pages || []).forEach(function (p) {
+      acc.push({ id: p.id, name: p.name, depth: depth || 0 });
+      if (p.pages && p.pages.length) flatten(p.pages, (depth || 0) + 1, acc);
+    });
+    return acc;
+  }
+  async function load() {
+    if (!window.cowork || !window.cowork.callMcpTool) {
+      contentEl.innerHTML = '<div class="err">Ce cockpit doit être ouvert dans Cowork (il a besoin du connecteur de documentation).</div>';
+      return;
+    }
+    try {
+      var listRes = unwrap(await window.cowork.callMcpTool(SERVER + "clickup_list_document_pages", { document_id: DOC_ID, max_page_depth: -1 }));
+      var flat = flatten(listRes.pages || [], 0, []);
+      if (!flat.length) throw new Error("Aucune page trouvée dans le Doc.");
+      var ids = flat.map(function (p) { return p.id; });
+      var pagesRes = unwrap(await window.cowork.callMcpTool(SERVER + "clickup_get_document_pages", { document_id: DOC_ID, page_ids: ids, content_format: "text/md" }));
+      var byId = {};
+      (pagesRes.pages || []).forEach(function (p) { byId[p.id] = p.content || ""; });
+      render(flat, byId);
+      statusEl.textContent = "À jour au " + new Date().toLocaleString("fr-FR") + " · utilisez Recharger pour rafraîchir.";
+    } catch (e) {
+      contentEl.innerHTML = '<div class="err">Impossible de charger le cerveau : ' + esc(e.message || String(e)) + "</div>";
+    }
+  }
+  function render(flat, byId) {
+    var chips = [], sections = [];
+    flat.forEach(function (p) {
+      var secId = "sec-" + p.id;
+      chips.push('<a class="chip" href="#' + secId + '">' + esc(p.name) + "</a>");
+      var hTag = p.depth === 0 ? "h2" : "h3";
+      sections.push(
+        '<section class="card" id="' + secId + '" data-text="' + esc((p.name + " " + (byId[p.id] || "")).toLowerCase()) + '">' +
+        "<" + hTag + ">" + esc(p.name) + "</" + hTag + ">" +
+        '<div class="body">' + renderMarkdown(byId[p.id] || "") + "</div></section>"
+      );
+    });
+    chipsEl.innerHTML = chips.join("");
+    contentEl.innerHTML = sections.join("");
+  }
+  searchEl.addEventListener("input", function () {
+    var q = searchEl.value.trim().toLowerCase();
+    contentEl.querySelectorAll("section.card").forEach(function (s) {
+      s.classList.toggle("hidden", !(!q || (s.getAttribute("data-text") || "").indexOf(q) !== -1));
+    });
+  });
+  load();
+})();
+</script>
+</body>
+</html>

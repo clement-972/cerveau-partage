@@ -64,6 +64,10 @@ Some connectors **replace a page's entire content** on update (ClickUp does; Not
 
 The journal records who made each update. On write: if the user's name is already known (remembered from a previous session, or exposed by the connector), use it silently; otherwise ask once "What name should I log your updates under?", then remember it.
 
+## Cockpit (optional read-only view)
+
+A read-only dashboard can be instantiated as a Cowork artifact from the bundled template `cockpit/cockpit.html`. On request (e.g. "open the brain cockpit"), create a Cowork artifact from that template, substituting two markers: the located Doc id, and the user's documentation-connector tool prefix (`mcp__<connector-id>__`). The cockpit reads the brain live via the connector each time it opens, so it needs no regeneration on "MAJ cerveau". It is per-user (each person opens their own) and lives in Cowork's Artifacts section.
+
 ## Safety rules
 
 No write without "MAJ cerveau". Always read a page before rewriting it (see the write-safety rule). Never mass-delete or mass-rewrite an existing note without explicit agreement. On a duplicate, offer an update instead of duplicating. Always log a write, and always confirm in one sentence.
@@ -117,6 +121,10 @@ Certains connecteurs **remplacent tout le contenu** d'une page lors d'une mise a
 ## Identite de l'auteur
 
 Le journal note qui ecrit. Si le nom est deja connu (memorise, ou expose par le connecteur), l'utiliser sans poser de question ; sinon, demander une fois "Sous quel nom journaliser tes mises a jour ?", puis le memoriser.
+
+## Cockpit (vue optionnelle en lecture seule)
+
+Un tableau de bord en lecture seule peut etre instancie comme artefact Cowork a partir du modele fourni `cockpit/cockpit.html`. Sur demande (par ex. "ouvre le cockpit du cerveau"), creer un artefact Cowork a partir de ce modele, en remplacant deux marqueurs : l'ID du Doc localise, et le prefixe des outils du connecteur de documentation de l'utilisateur (`mcp__<id-connecteur>__`). Le cockpit lit le cerveau en direct via le connecteur a chaque ouverture : aucune regeneration sur "MAJ cerveau". Il est par utilisateur (chacun ouvre le sien) et se trouve dans la section Artefacts de Cowork.
 
 ## Regles de prudence
 
