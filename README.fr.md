@@ -81,6 +81,10 @@ Certains connecteurs remplacent tout le contenu d'une page a la mise a jour (Cli
 
 Pas de recherche semantique, pas de detection de contradictions au dela de l'anti-doublon simple, pas de gestion fine des modifications simultanees. La competence s'appuie sur l'outil de documentation et son connecteur : elle herite donc des limites et des droits de cet outil.
 
+## Exemple
+
+Pour un deroule concret d'embarquement d'un coequipier avec ClickUp, voir [examples/onboarding-clickup.md](examples/onboarding-clickup.md). Le skill reste agnostique du connecteur ; ce n'est que l'instance d'un outil.
+
 ## Licence
 
 MIT. Voir [LICENSE](LICENSE). Utilisation, modification et diffusion libres.

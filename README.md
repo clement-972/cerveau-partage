@@ -81,6 +81,10 @@ Some connectors replace a page's entire content on update (ClickUp; Notion edits
 
 No semantic search, no contradiction detection beyond simple de-duplication, no fine handling of concurrent edits. The skill builds on the documentation tool and its connector: it inherits that tool's limits and permissions.
 
+## Example
+
+For a concrete walkthrough onboarding a teammate with ClickUp, see [examples/onboarding-clickup.md](examples/onboarding-clickup.md). The skill stays connector-agnostic; this is just one tool's instance.
+
 ## License
 
 MIT. See [LICENSE](LICENSE). Free to use, modify, and distribute.
