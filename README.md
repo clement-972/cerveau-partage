@@ -1,127 +1,90 @@
-# Cerveau Partage
+# Cerveau Partage (Shared Brain)
 
-*Langue : Francais (ce fichier) | [English](README.en.md)*
+*Language: English (this file) | [Francais](README.fr.md)*
 
-Une memoire partagee pour equipe produit, posee sur de simples fichiers Markdown dans un dossier partage. Chacun y verse le savoir stabilise (reglementaire, specs, decisions, roadmap, skills) ; tout le monde le relit au demarrage de ses sessions IA. Plus besoin de reexpliquer ce qui est deja su.
+A shared memory for product teams, built on a structured Doc inside the documentation tool your team already uses (ClickUp, Notion, or any tool with a connector). Everyone writes stabilized knowledge into it (regulatory, specs, decisions, roadmap, skills); everyone reads it back across their AI sessions. No more re-explaining what is already known.
 
-Pas de serveur, pas de base de donnees, pas d'interface a installer. Le cerveau reste lisible et editable a la main : meme sans l'outil, ce sont juste des fichiers Markdown.
+No folder to sync, no local files to manage: the brain lives where your team already works, and the AI reaches it through that tool's connector.
 
-## Ce que contient ce depot
+The project name, the write keyword "MAJ cerveau" and the category names are kept in French, because that is the original team's working language. They are a convention you can change.
+
+## What this repository contains
 
 ```
 cerveau-partage/
-├── README.md            ce fichier (FR)
-├── README.en.md         version anglaise
-├── LICENSE              licence MIT
-├── cerveau/             le modele de cerveau, pret a copier dans le dossier partage
-│   ├── 00_CONTEXTE.md   mode d'emploi + table d'aiguillage (lu par l'IA au demarrage)
-│   ├── 00_JOURNAL.md    journal horodate des ecritures
-│   ├── 01_reglementaire/ ... 06_en_cours/   6 categories, une fiche d'exemple chacune
-│   ├── cockpit.html     visualisation autonome (instantane genere, lecture seule)
-│   └── _cockpit/        generateur du cockpit (generate.py, Python standard, sans dependance)
+├── README.md            this file (EN)
+├── README.fr.md         French version
+├── LICENSE              MIT license
 └── skill/
-    └── cerveau-partage/ le Skill (standard Agent Skills)
+    └── cerveau-partage/ the Skill (Agent Skills standard)
         ├── SKILL.md
-        └── references/  protocole d'ecriture + modeles de fiches
+        └── references/  writing protocol + note templates
 ```
 
-## Comment ca marche, en deux idees
+## How it works, in two ideas
 
-1. **Lecture ciblee au demarrage.** Quand tu ouvres une session IA dans le dossier partage, l'IA lit `cerveau/00_CONTEXTE.md`, puis charge seulement le sous-dossier utile a ton sujet (pas tout le cerveau).
-2. **Ecriture sur declenchement.** Rien n'est ecrit dans le cerveau sans le mot-cle **"MAJ cerveau"**. Quand tu l'ecris, l'IA range l'info dans la bonne categorie, evite les doublons, ajoute une ligne au journal et confirme en une phrase.
+1. **Targeted reading.** When a question overlaps team knowledge, the AI locates the "Cerveau" Doc, reads its "Sommaire et conventions" page (the routing table), then opens only the relevant sub-page (not the whole brain).
+2. **Triggered writing.** Nothing is written without the keyword **"MAJ cerveau"**. When you write it, the AI files the information in the right sub-page, avoids duplicates, adds a line to the Journal, and confirms in one sentence.
 
-## Les categories
+## Brain structure
 
-| Dossier | Pour quoi |
-|---------|-----------|
-| `01_reglementaire/` | conformite, obligations legales, normes |
-| `02_specs_fonctionnelles/` | comportement du produit, parcours, regles metier |
-| `03_specs_techniques/` | architecture, API, schema de donnees, choix techniques |
-| `04_skills/` | prompts, procedures reutilisables, methodes de travail avec l'IA |
-| `05_roadmap/` | vision, priorites, jalons |
-| `06_en_cours/` | decisions en cours, questions ouvertes |
+The brain is a "Cerveau" Doc, to recreate in your tool:
 
-## Deux choses a ne pas confondre
+```
+Cerveau
+└── Sommaire et conventions   (user guide + routing table)
+    ├── Journal               (timestamped write log)
+    ├── 01 Reglementaire      compliance, legal obligations, standards
+    ├── 02 Specs fonctionnelles  product behavior, journeys, business rules
+    ├── 03 Specs techniques   architecture, API, data model, technical choices
+    ├── 04 Skills             prompts, reusable procedures, AI working methods
+    ├── 05 Roadmap            vision, priorities, milestones
+    └── 06 En cours           ongoing decisions, open questions
+```
 
-Cette distinction evite la plupart des confusions :
+## Two things not to confuse
 
-- **La competence** (le dossier `skill/cerveau-partage/`, celui qui contient `SKILL.md`) est l'outil. Tu l'ajoutes a Claude une fois par personne. Elle ne contient aucune donnee.
-- **Le cerveau** (le dossier `cerveau/`) est la donnee partagee de l'equipe. Il vit dans un dossier synchronise, et c'est ce dossier que tu ouvres dans Claude pour travailler.
+- **The skill** (the `skill/cerveau-partage/` folder, the one containing `SKILL.md`) is the tool. You add it to Claude once per person. It holds no data.
+- **The brain** is the team's shared data: the "Cerveau" Doc in your documentation tool. The AI reaches it through that tool's connector.
 
 ## Installation
 
-### 1. Installer la competence dans Claude
-La competence suit le standard ouvert Agent Skills (un dossier avec un `SKILL.md`). Ajoute la dans les reglages de ton assistant, a l'endroit qui gere les competences (Reglages, Capacites ou Skills selon l'outil), en pointant le dossier `skill/cerveau-partage` (celui qui contient `SKILL.md`), surtout pas le dossier `cerveau/`.
+### 1. Install the skill in Claude
+The skill follows the open Agent Skills standard (a folder with a `SKILL.md`). Add it in your assistant's settings, wherever skills are managed (Settings, Capabilities or Skills depending on the tool), pointing at the `skill/cerveau-partage` folder. This is a one-time step per machine.
 
-Pour Claude Code, l'emplacement habituel est `~/.claude/skills/cerveau-partage/` (pour toi seul) ou `.claude/skills/cerveau-partage/` dans le dossier du projet (partage avec l'equipe). C'est une etape a faire une fois par machine.
+### 2. Create the brain in your documentation tool
+Recreate the structure above in your team's tool (ClickUp, Notion, etc.): a "Cerveau" Doc with a "Sommaire et conventions" page holding the routing table, a "Journal" page, and one sub-page per category. Share that Doc with the team according to your space's permissions.
 
-### 2. Mettre le cerveau dans un dossier partage
-Le cerveau n'est qu'un dossier de fichiers Markdown. Copie le dossier `cerveau/` la ou ton equipe synchronise deja ses fichiers. L'outil n'impose aucun service : il fonctionne avec ce que ta boite utilise et a deja valide.
+One requirement: the tool must be reachable by Claude through a connector, and each member must have authorized that connector on their side.
 
-Une seule regle technique a respecter : choisis une synchro qui garde les fichiers reellement sur le disque local (evite les modes "en ligne uniquement" ou "streaming"). Sinon Claude n'ecrit pas de facon fiable. C'est ce qui posait probleme avec Google Drive en streaming, pas le partage en lui meme.
+### 3. Point the skill at the brain
+The skill locates the brain in three ways, in order: a reference (Doc URL or ID) filled into `SKILL.md`; otherwise a search by name ("Cerveau") via the connector; otherwise a one-time question whose answer is remembered. For a team, the simplest is to fill the Doc reference into `SKILL.md`.
 
-Quelques recettes equivalentes, a choisir selon ton contexte :
+### Your name for the log
+The log records who makes each update. The skill asks for your name on the very first "MAJ cerveau" and reuses it afterward. You are asked only once.
 
-- **OneDrive ou SharePoint** (souvent deja en place en entreprise Microsoft 365) : synchronise un dossier ou une bibliotheque d'equipe sur ta machine, fichiers gardes en local. Synchro automatique en fond : plus rien a penser apres "MAJ cerveau".
-- **Partage reseau, Dropbox ou equivalent** : meme principe, un dossier d'equipe synchronise en local. Synchro automatique.
-- **Git** (equipes a l'aise, ou si tu veux l'historique et la tracabilite) : un depot prive appartenant a l'organisation. Le partage demande un geste (push et pull), via GitHub Desktop ou automatise. Bonus : chaque modification est datee et attribuee, ce qui complete le journal.
+## Daily use
 
-Aucune de ces options n'est imposee. Le cerveau restant un simple dossier, tu peux changer de mode de partage a tout moment sans rien casser.
+**Read (automatic).** Ask your question, e.g. "What are our mandatory invoice notices?" The AI opens `01 Reglementaire` and answers from what is already known.
 
-### 3. (Optionnel) Ton nom pour le journal
-Le journal note qui a fait chaque mise a jour. Ton nom est lu dans un petit fichier local, propre a ta machine et hors du dossier partage :
+**Write (on request).** Write "MAJ cerveau" followed by the information:
 
-- macOS / Linux : `~/.cerveau-partage/auteur.txt`
-- Windows : `%USERPROFILE%\.cerveau-partage\auteur.txt`
+> MAJ cerveau: we decided, we are going with UUID v4 for API identifiers.
 
-Une seule ligne, ton prenom. Si tu ne crees pas ce fichier, l'IA te demandera ton nom au tout premier "MAJ cerveau" et le creera pour toi. Tu n'auras la question qu'une fois.
+The AI files the decision under `03 Specs techniques`, checks no close note already exists, logs it, and confirms.
 
-## Usage au quotidien
+## One technical rule to know
 
-**Lire (automatique).** Ouvre une session dans le dossier partage et pose ta question. Exemple : "Quelles sont nos mentions obligatoires sur les factures ?" L'IA charge `01_reglementaire/` et te repond avec ce qui est deja connu.
+Some connectors replace a page's entire content on update (ClickUp; Notion edits surgically). The skill therefore always applies the "read before rewrite" rule: it re-reads the current content and sends back the whole thing plus the addition, so it never overwrites the rest.
 
-**Ecrire (sur demande).** Ecris "MAJ cerveau" suivi de l'information. Exemple :
+## Out of scope
 
-> MAJ cerveau : on a tranche, on part sur des UUID v4 pour les identifiants d'API.
+No semantic search, no contradiction detection beyond simple de-duplication, no fine handling of concurrent edits. The skill builds on the documentation tool and its connector: it inherits that tool's limits and permissions.
 
-L'IA range la decision dans `03_specs_techniques/`, verifie qu'une fiche proche n'existe pas deja, journalise, et confirme : "C'est range : `03_specs_techniques/identifiants-api.md` cree et journalise."
+## License
 
-## Cockpit (visualisation)
+MIT. See [LICENSE](LICENSE). Free to use, modify, and distribute.
 
-Le cerveau inclut un cockpit : une page HTML autonome, `cerveau/cockpit.html`, qui presente toutes les fiches, le journal et les conventions dans une interface lisible, avec recherche. Pour l'ouvrir, double-clique simplement sur `cockpit.html`. C'est une vue en lecture seule : elle ne modifie jamais le cerveau.
+## Author
 
-La page est un instantane, regenere a partir des fichiers Markdown par `cerveau/_cockpit/generate.py` (Python standard, aucune dependance). Le Skill la rafraichit automatiquement apres chaque "MAJ cerveau", donc elle reste a jour sans rien faire. Pour la regenerer a la main :
-
-```
-python3 cerveau/_cockpit/generate.py
-```
-
-Si Python n'est pas installe, le cerveau reste pleinement utilisable : le cockpit est un confort, pas une dependance.
-
-## Tester en cinq minutes (le critere de reussite)
-
-1. Mets le dossier `cerveau/` dans un espace partage entre deux machines (OneDrive, un partage reseau ou Git).
-2. Sur la machine A, ouvre une session et ecris : `MAJ cerveau : nos factures doivent afficher le numero de TVA intracommunautaire du client pour les ventes dans l'UE.`
-3. Verifie qu'une fiche apparait dans `cerveau/01_reglementaire/` et qu'une ligne s'ajoute en haut de `cerveau/00_JOURNAL.md`.
-4. Laisse la synchronisation se faire, puis sur la machine B ouvre une session et demande : "Que doit-on afficher sur les factures pour les ventes dans l'UE ?"
-5. L'IA doit repondre avec la regle, sans que tu aies eu a la reexpliquer.
-
-## Pourquoi pas de serveur ni de service impose
-
-Choix d'architecture assume, et c'est ce qui distingue l'outil :
-
-- **Legerete** : pas de serveur a heberger, pas de base de donnees, pas de compte a creer. L'outil reste auditable et le cerveau survit a l'outil.
-- **Securite** : la donnee, parfois sensible, ne quitte jamais l'infrastructure deja approuvee par ton entreprise. Aucun nouveau prestataire, aucune nouvelle surface d'attaque, pas de contrat supplementaire a faire valider.
-- **Portabilite** : chaque organisation a ses contraintes (achats, outils autorises). En restant un dossier, l'outil s'adapte a toutes au lieu d'en imposer une.
-
-## Hors perimetre
-
-Pas de serveur ni de base de donnees, pas de recherche semantique, pas de detection de contradictions au dela de l'anti-doublon simple, pas de gestion de modifications simultanees, pas d'interface graphique, pas de multi-espaces, pas d'authentification. C'est un choix : l'outil reste leger et le cerveau survit a l'outil.
-
-## Licence
-
-MIT. Voir [LICENSE](LICENSE). Utilisation, modification et diffusion libres.
-
-## Auteur
-
-Cerveau Partage, cree et maintenu par Clément Deschamps. LinkedIn : https://www.linkedin.com/in/clementdeschamps/
+Cerveau Partage, created and maintained by Clément Deschamps. LinkedIn: https://www.linkedin.com/in/clementdeschamps/

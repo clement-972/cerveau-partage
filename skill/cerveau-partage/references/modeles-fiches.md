@@ -1,8 +1,12 @@
-# Modeles de fiches / Note templates
+# Note templates / Modeles de fiches
 
-Gabarits a utiliser quand on cree une fiche. L'en-tete est commun a toutes les categories ; le corps s'adapte. / Templates to use when creating a note. The header is common to all categories; the body adapts.
+Templates to use when creating a note inside a brain sub-page. A note is a section within its category sub-page: its title is a heading, followed by a status line. The header is common to all categories; the body adapts.
 
-## En-tete commun / Common header
+The field labels below are kept in French (the team's working convention) and can be translated for another team. There is no filename rule: a note lives in a page, its title is enough to find it.
+
+*(Version francaise plus bas.)*
+
+## Common header / En-tete commun
 
 ```
 # Titre clair de la fiche
@@ -10,11 +14,11 @@ Gabarits a utiliser quand on cree une fiche. L'en-tete est commun a toutes les c
 > Statut : stable | Derniere maj : AAAA-MM-JJ | Auteur : Prenom | Mots-cles : mot1, mot2, mot3
 ```
 
-- `Statut` : `stable` dans les dossiers definitifs, `en cours` dans `06_en_cours/`.
-- `Derniere maj` : date du jour de la derniere ecriture.
-- `Mots-cles` : 3 a 6 termes qui servent au reperage et a l'anti-doublon.
+- `Statut`: `stable` in the settled sub-pages, `en cours` in `06 En cours`.
+- `Derniere maj`: date of the last write.
+- `Mots-cles`: 3 to 6 terms used for retrieval and de-duplication.
 
-## 01_reglementaire
+## 01 Reglementaire
 
 ```
 # Titre
@@ -31,7 +35,7 @@ Texte de loi, norme ou reference interne.
 Ce que cela impose concretement au produit.
 ```
 
-## 02_specs_fonctionnelles
+## 02 Specs fonctionnelles
 
 ```
 # Titre
@@ -48,7 +52,7 @@ Les etapes principales.
 Les contraintes et cas limites.
 ```
 
-## 03_specs_techniques
+## 03 Specs techniques
 
 ```
 # Titre
@@ -65,7 +69,7 @@ Pourquoi ce choix.
 Ce que cela implique pour la suite.
 ```
 
-## 04_skills
+## 04 Skills
 
 ```
 # Titre
@@ -82,7 +86,7 @@ Les etapes a suivre.
 Une illustration concrete.
 ```
 
-## 05_roadmap
+## 05 Roadmap
 
 ```
 # Titre
@@ -96,7 +100,7 @@ L'objectif vise.
 Ce qui est fait maintenant, ce qui suit, ce qui viendra plus tard.
 ```
 
-## 06_en_cours
+## 06 En cours
 
 ```
 # Titre
@@ -110,5 +114,16 @@ Ce qui reste a trancher.
 Les pistes et leurs compromis.
 
 ## A trancher
-Ce qui declenchera la decision, et vers quel dossier deplacer la fiche une fois stabilisee.
+Ce qui declenchera la decision, et vers quelle sous-page deplacer la fiche une fois stabilisee.
 ```
+
+---
+
+# Modeles de fiches (Francais)
+
+Gabarits a utiliser quand on cree une fiche dans une sous-page du cerveau. Une fiche est une section au sein de la sous-page de sa categorie : son titre est un en-tete, suivi d'une ligne d'etat. L'en-tete (ci-dessus) est commun a toutes les categories ; le corps s'adapte par categorie, selon les gabarits ci-dessus.
+
+- `Statut` : `stable` dans les sous-pages definitives, `en cours` dans `06 En cours`.
+- `Derniere maj` : date du jour de la derniere ecriture.
+- `Mots-cles` : 3 a 6 termes qui servent au reperage et a l'anti-doublon.
+- Pas de regle de nom de fichier : la fiche vit dans une page, son titre suffit a la reperer.
